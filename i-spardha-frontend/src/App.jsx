@@ -10,12 +10,15 @@ import UserControll from "./admin/UserControll";
 import MatchFixture from "./admin/MatchFixture";
 import PointTable from "./admin/PointTable";
 import Footer from "./components/Footer";
+import AddPlayersToFixture from "./player/AddPlayersToFixture";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <div className="flex flex-col min-h-full">
       <AuthProvider>
         <Router>
+          <Navbar/>
           <Routes>
             <Route path="/" element={<LoginPage />} />
 
@@ -43,6 +46,14 @@ function App() {
             <Route
               path="/playerdashboard"
               element={<ProtectedRoute element={<PlayerDashboard />} />}
+            />
+              <Route
+              path="/addplayertofixture"
+              element={<ProtectedRoute element={<AddPlayersToFixture />} />}
+            />
+              <Route
+              path="/showpointtable"
+              element={<ProtectedRoute element={<PointTable />} />}
             />
           </Routes>
           <Footer />

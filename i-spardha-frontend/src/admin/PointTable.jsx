@@ -174,25 +174,6 @@ const PointTable = () => {
           Add Points
         </button>
 
-        {/* Add New Game */}
-        <div className="mt-6">
-          <div>
-            <label className="block text-gray-600 font-medium">New Game</label>
-            <input
-              type="text"
-              value={newGameName}
-              onChange={(e) => setNewGameName(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="Enter New Game Name"
-            />
-          </div>
-          <button
-            onClick={handleAddGame}
-            className="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-          >
-            Add Game
-          </button>
-        </div>
 
         {/* Point Table */}
         <table className="w-full mt-6 border border-collapse">

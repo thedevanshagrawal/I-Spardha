@@ -33,21 +33,23 @@ const MatchFixture = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/v1/MatchFixture/MatchFixtureDetails",
+        "http://localhost:5000/api/v1/matchFixture/getAllMatchFixture",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       setUsers(response.data.data);
+      toast.success("Match fixtures fetched successfully!");
     } catch (error) {
       console.error("Error fetching user fixture:", error);
+      toast.error("Failed to fetch match fixtures. Please try again.");
     }
   };
 
   const handleAddMatchFixture = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/v1/MatchFixture/createMatchFixture",
+        "http://localhost:5000/api/v1/matchFixture/createMatchFixture",
         formData,
         {
           headers: {
@@ -64,16 +66,19 @@ const MatchFixture = () => {
         date: "",
         gender: "",
       });
+      toast.success("Match fixture added successfully!");
     } catch (error) {
       console.error("Error adding user fixture:", error);
+      toast.error("Failed to add match fixture. Please try again.");
     }
   };
 
   return (
     <div className="font-sans bg-gray-100 p-6">
+      <ToastContainer />
       <div className="bg-white max-w-4xl mx-auto p-8 rounded-lg shadow-lg">
         <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-          i Spardha 2k24 - Match Fixture
+          i Spardha - Match Fixture
         </h1>
 
         {/* Admin Form */}
@@ -102,9 +107,9 @@ const MatchFixture = () => {
             <input
               type="text"
               id="game"
-              value={formData.game}
+              value={formData.gameName}
               onChange={(e) =>
-                setFormData({ ...formData, game: e.target.value })
+                setFormData({ ...formData, gameName: e.target.value })
               }
               placeholder="Enter Game Name"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -159,8 +164,8 @@ const MatchFixture = () => {
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Gender</option>
-              <option value="boy">boy</option>
-              <option value="girl">girl</option>
+              <option value="boy">Boy</option>
+              <option value="girl">Girl</option>
             </select>
           </div>
 
@@ -185,50 +190,52 @@ const MatchFixture = () => {
             type="submit"
             className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none"
           >
-            Add match
+            Add Match
           </button>
         </div>
 
-        {/* user Fixture Table */}
+        {/* User Fixture Table */}
         <h2 className="text-xl font-semibold text-gray-800 mt-8 text-center">
           Upcoming Matches
         </h2>
-        <table className="w-full mt-6 border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
-                Match Number
-              </th>
-              <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
-                Game Name
-              </th>
-              <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
-                House 1
-              </th>
-              <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
-                House 2
-              </th>
-              <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
-                Gender
-              </th>
-              <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
-                Date
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td className="px-4 py-2">{user.matchNumber}</td>
-                <td className="px-4 py-2">{user.gameName}</td>
-                <td className="px-4 py-2">{user.teams[0].house}</td>
-                <td className="px-4 py-2">{user.teams[1].house}</td>
-                <td className="px-4 py-2">{user.gender}</td>
-                <td className="px-4 py-2">{user.date}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full mt-6 border-collapse">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
+                  Match Number
+                </th>
+                <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
+                  Game Name
+                </th>
+                <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
+                  House 1
+                </th>
+                <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
+                  House 2
+                </th>
+                <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
+                  Gender
+                </th>
+                <th className="px-4 py-2 text-gray-800 font-medium bg-blue-500 text-white">
+                  Date
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="px-4 py-2">{user.matchNumber}</td>
+                  <td className="px-4 py-2">{user.gameName}</td>
+                  <td className="px-4 py-2">{user.teams[0].house}</td>
+                  <td className="px-4 py-2">{user.teams[1].house}</td>
+                  <td className="px-4 py-2">{user.gender}</td>
+                  <td className="px-4 py-2">{user.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

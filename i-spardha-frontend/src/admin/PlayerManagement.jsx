@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie"; // For JWT authentication
+import Cookies from "js-cookie"; 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PlayerManagement = () => {
   const [players, setPlayers] = useState([]);
@@ -14,7 +16,6 @@ const PlayerManagement = () => {
   });
 
   const token = Cookies.get("accessToken"); // Retrieve the JWT token
-
   const isAuthenticated = token !== undefined;
 
   useEffect(() => {
@@ -65,8 +66,10 @@ const PlayerManagement = () => {
           mobile: "",
           gender: "",
         });
+        toast.success("Player added successfully!"); // Success toast
       } catch (error) {
         console.error("Error adding player:", error);
+        toast.error("Failed to add player."); // Error toast
       }
     }
   };
@@ -80,16 +83,16 @@ const PlayerManagement = () => {
         },
       });
       fetchPlayers(); // Refresh the list after deletion
+      toast.success("Player deleted successfully!"); // Success toast
     } catch (error) {
       console.error("Error deleting player:", error);
+      toast.error("Failed to delete player."); // Error toast
     }
   };
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <header className="bg-blue-700 text-white text-center py-5 text-lg font-bold">
-        Player Management - i Spardha 2k24
-      </header>
+      <ToastContainer />
       <main className="max-w-4xl mx-auto bg-white shadow-md rounded-lg mt-10 p-6">
         <h2 className="text-center text-2xl font-bold text-blue-700 mb-6">
           Manage Players
