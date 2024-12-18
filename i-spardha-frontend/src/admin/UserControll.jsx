@@ -63,6 +63,11 @@ const UserControll = () => {
         role: "",
         house: "",
       });
+      toast.success("Player Added", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "light",
+    })
     } catch (error) {
       console.error("Error adding user:", error);
     }

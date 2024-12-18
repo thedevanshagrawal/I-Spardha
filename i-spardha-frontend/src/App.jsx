@@ -15,10 +15,10 @@ import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="font-body bg-gray-100 text-gray-900 flex flex-col min-h-full">
       <AuthProvider>
         <Router>
-          <Navbar/>
+          <Navbar />
           <Routes>
             <Route path="/" element={<LoginPage />} />
 
@@ -47,11 +47,11 @@ function App() {
               path="/playerdashboard"
               element={<ProtectedRoute element={<PlayerDashboard />} />}
             />
-              <Route
+            <Route
               path="/addplayertofixture"
               element={<ProtectedRoute element={<AddPlayersToFixture />} />}
             />
-              <Route
+            <Route
               path="/showpointtable"
               element={<ProtectedRoute element={<PointTable />} />}
             />

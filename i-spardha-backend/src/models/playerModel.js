@@ -25,7 +25,8 @@ const playerSchema = new mongoose.Schema(
             enum: ['dominator', 'terminator', 'challengers', 'avengers']
         },
         mobile: {
-            type: Number
+            type: Number,
+            unique: true
         },
         game: {
             type: mongoose.Schema.Types.ObjectId,

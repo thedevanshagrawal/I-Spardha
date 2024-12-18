@@ -95,6 +95,21 @@ const PointTable = () => {
     }
   };
 
+  // Reset Points for all games and houses
+  const handleResetPoints = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/v1/pointTable/resetPoints",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchPoints(); // Refresh point table after resetting points
+      toast.success("Points reset successfully!");
+    } catch (error) {
+      toast.error("Failed to reset points.", error);
+    }
+  };
+
   // Calculate Total Points for a House
   const calculateTotalPoints = (house) => {
     return pointTable
@@ -174,6 +189,13 @@ const PointTable = () => {
           Add Points
         </button>
 
+        {/* Reset Points Button */}
+        <button
+          onClick={handleResetPoints}
+          className="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+        >
+          Reset All Points
+        </button>
 
         {/* Point Table */}
         <table className="w-full mt-6 border border-collapse">
@@ -227,3 +249,4 @@ const PointTable = () => {
 };
 
 export default PointTable;
+

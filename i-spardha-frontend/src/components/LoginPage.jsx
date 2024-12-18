@@ -48,9 +48,11 @@ function LoginPage() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-indigo-700 min-h-screen flex justify-center items-center px-4">
+    <div className="bg-[url('login-banner.jpg')] bg-cover min-h-screen flex  justify-center items-center px-4">
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-center text-gray-700 mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl font-semibold text-center text-gray-700 mb-6 sm:mb-5">I-Spardha {new Date().getFullYear()}</h1>
+
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center text-gray-700 mb-6 sm:mb-7">
           Login
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">

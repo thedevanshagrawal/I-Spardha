@@ -1,93 +1,73 @@
-import  { useState } from "react";
-import PlayerManagement from "./PlayerManagement";
-import UserControll from "./UserControll";
-import MatchFixture from "./MatchFixture";
-import PointTable from "./PointTable";
+import { Link } from "react-router-dom";
 
-function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("playermanagment");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+const AdminDashboard = () => {
   return (
-    <div className="flex flex-col sm:flex-row h-screen">
+    <div className="flex h-screen bg-gray-100 font-sans">
       {/* Sidebar */}
-      <div
-        className={`fixed sm:relative z-50 w-64 bg-gray-800 text-white flex flex-col transition-transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-64"
-        } sm:translate-x-0`}
-      >
-        <div className="p-6 text-lg font-bold border-b border-gray-700 flex justify-between items-center sm:block">
-          
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="sm:hidden text-gray-400 hover:text-white"
-          >
-            ✕
-          </button>
+      <aside className="w-64 bg-white shadow-md">
+        <div className="p-4 text-center">
+          {/* Optional content like a logo or title */}
         </div>
-        <nav className="flex-grow">
-          <ul className="space-y-2 p-4">
-            <li>
-              <button
-                onClick={() => setActiveTab("playermanagment")}
-                className={`block w-full text-left py-2 px-4 rounded-md ${
-                  activeTab === "playermanagment" ? "bg-gray-700" : "hover:bg-gray-700"
-                }`}
+        <nav className="mt-6">
+          <ul className="space-y-4">
+            {/* <li>
+              <Link
+                to="/admindashboard"
+                className="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white"
               >
-                Player Managment
-              </button>
+                Dashboard
+              </Link>
+            </li> */}
+            <li>
+              <Link
+                to="/playermanagment"
+                className="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white"
+              >
+                Player Management
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => setActiveTab("usercontroll")}
-                className={`block w-full text-left py-2 px-4 rounded-md ${
-                  activeTab === "usercontroll" ? "bg-gray-700" : "hover:bg-gray-700"
-                }`}
+              <Link
+                to="/usercontroll"
+                className="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white"
               >
-                User Controll
-              </button>
+                User Control
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => setActiveTab("matchfixture")}
-                className={`block w-full text-left py-2 px-4 rounded-md ${
-                  activeTab === "matchfixture" ? "bg-gray-700" : "hover:bg-gray-700"
-                }`}
+              <Link
+                to="/matchfixture"
+                className="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white"
               >
                 Match Fixture
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => setActiveTab("pointtable")}
-                className={`block w-full text-left py-2 px-4 rounded-md ${
-                  activeTab === "pointtable" ? "bg-gray-700" : "hover:bg-gray-700"
-                }`}
+              <Link
+                to="/pointtable"
+                className="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white"
               >
-                Point Table
-              </button>
+                Points Table
+              </Link>
             </li>
           </ul>
         </nav>
-      </div>
-
-      {/* Mobile Sidebar Toggle */}
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="sm:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-md"
-      >
-        ☰
-      </button>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-grow bg-gray-100 p-6 overflow-auto sm:ml-50">
-        {activeTab === "playermanagment" && <PlayerManagement />}
-        {activeTab === "usercontroll" && <UserControll />}
-        {activeTab === "matchfixture" && <MatchFixture />}
-        {activeTab === "pointtable" && <PointTable />}
-      </div>
+      <main className="flex-1 relative">
+        <video
+          className="w-full h-full object-cover"
+          loop
+          muted
+          autoPlay
+        >
+          <source src="vid1.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </main>
     </div>
   );
-}
+};
 
 export default AdminDashboard;

@@ -4,19 +4,25 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    () => !!Cookies.get("accessToken")
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const token = Cookies.get("accessToken");
+    return !!token; // Initial state based on the presence of the token
+  });
   const navigate = useNavigate();
 
-  // Update login state
+  // Function to update the login state
   const updateLoginState = () => {
     const token = Cookies.get("accessToken");
     setIsLoggedIn(!!token);
   };
 
+  // Keep track of cookie changes
   useEffect(() => {
-    updateLoginState(); // Run initially to check the login state
+    updateLoginState(); // Check login state on component mount
+
+    const interval = setInterval(updateLoginState, 1000); // Poll for token changes
+
+    return () => clearInterval(interval); // Cleanup interval
   }, []);
 
   const handleLogout = async () => {
@@ -38,8 +44,6 @@ export default function Navbar() {
       alert("An error occurred during logout. Please try again.");
     }
   };
-
-  // console.log("isLoggedIn: ", isLoggedIn);
 
   return (
     <nav className="bg-blue-800 text-white shadow-lg">

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie"; 
+import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,79 +14,125 @@ const PlayerManagement = () => {
     mobile: "",
     gender: "",
   });
-
-  const token = Cookies.get("accessToken"); // Retrieve the JWT token
+  const [houseFilter, setHouseFilter] = useState("");
+  const [editingPlayerId, setEditingPlayerId] = useState(null);
+  const token = Cookies.get("accessToken");
   const isAuthenticated = token !== undefined;
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchPlayers();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, houseFilter]);
 
-  // Fetch players from the backend
+  // Fetch players from the backend, with optional filtering by house
   const fetchPlayers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/players/getAllPlayers", {
+      let url = "http://localhost:5000/api/v1/players/getAllPlayers";
+      if (houseFilter) {
+        url += `?house=${houseFilter}`; // Add house filter to the URL if it's selected
+      }
+      const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setPlayers(response.data.data); // Assume API response has `data` field
+      setPlayers(response.data.data); // Set players data from the API response
     } catch (error) {
       console.error("Error fetching players:", error);
     }
   };
 
-  // Handle input change
+  // Handle form input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (Object.values(formData).every((field) => field.trim() !== "")) {
-      try {
-        await axios.post(
-          "http://localhost:5000/api/v1/players/createPlayer",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        fetchPlayers(); // Refresh the list after adding a new player
-        setFormData({
-          fullName: "",
-          branch: "",
-          house: "",
-          year: "",
-          mobile: "",
-          gender: "",
-        });
-        toast.success("Player added successfully!"); // Success toast
-      } catch (error) {
-        console.error("Error adding player:", error);
-        toast.error("Failed to add player."); // Error toast
-      }
+  const handleAddPlayer = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/v1/players/createPlayer",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchPlayers(); // Refresh the list after adding/updating a player
+      setFormData({
+        fullName: "",
+        branch: "",
+        house: "",
+        year: "",
+        mobile: "",
+        gender: "",
+      });
+      toast.success("Player Added", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "light",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
+  };
+
+  const handleUpdatePlayer = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/v1/players/updatePlayer",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchPlayers(); // Refresh users list after updating
+      setFormData({
+        fullName: "",
+        branch: "",
+        house: "",
+        year: "",
+        mobile: "",
+        gender: "",
+      }); // Reset form data
+      setEditingPlayerId(null); //
+    } catch (error) {
+      console.error("Error updating player:", error);
+    }
+  };
+
+  // Handle edit button click to populate the form with existing player data
+  const handleEdit = (player) => {
+    setFormData({
+      fullName: player.fullName,
+      branch: player.branch,
+      house: player.house,
+      year: player.year,
+      mobile: player.mobile, // Ensure the mobile number is correctly set
+      gender: player.gender,
+    });
+    setEditingPlayerId(player._id); // Set the player ID to update
   };
 
   // Delete player
   const deletePlayer = async (playerId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/players/${playerId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `http://localhost:5000/api/v1/players/deletePlayer/${playerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       fetchPlayers(); // Refresh the list after deletion
-      toast.success("Player deleted successfully!"); // Success toast
+      toast.success("Player deleted successfully!"); // Show success toast
     } catch (error) {
       console.error("Error deleting player:", error);
-      toast.error("Failed to delete player."); // Error toast
+      toast.error("Failed to delete player."); // Show error toast
     }
   };
 
@@ -97,7 +143,24 @@ const PlayerManagement = () => {
         <h2 className="text-center text-2xl font-bold text-blue-700 mb-6">
           Manage Players
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 mb-6">
+
+        {/* House filter dropdown */}
+        <div className="flex justify-between items-center mb-6">
+          <select
+            value={houseFilter}
+            onChange={(e) => setHouseFilter(e.target.value)} // Update house filter state
+            className="p-2 border border-gray-300 rounded-md bg-gray-50"
+          >
+            <option value="">All Houses</option>
+            <option value="Dominator">Dominator</option>
+            <option value="Terminator">Terminator</option>
+            <option value="Avengers">Avengers</option>
+            <option value="Challengers">Challengers</option>
+          </select>
+        </div>
+
+        
+        <div className="flex flex-wrap gap-4 mb-6">
           <input
             type="text"
             name="fullName"
@@ -127,12 +190,16 @@ const PlayerManagement = () => {
               Select Branch
             </option>
             <option value="B.TECH">B.TECH</option>
-            <option value="B.COMM">B.COMM</option>
+            <option value="B.COM">B.COM</option>
+            <option value="BCA">BCA</option>
             <option value="BBA">BBA</option>
             <option value="BA">BA</option>
             <option value="LLB">LLB</option>
             <option value="B.ED">B.ED</option>
             <option value="BSC">BSC</option>
+            <option value="MA">MA</option>
+            <option value="MBA">MBA</option>
+            <option value="MCA">MCA</option>
           </select>
           <select
             name="house"
@@ -171,12 +238,14 @@ const PlayerManagement = () => {
             required
           />
           <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md"
+            onClick={editingPlayerId ? handleUpdatePlayer : handleAddPlayer}
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full md:w-auto"
           >
-            Add Player
+            {editingPlayerId ? "Update Player" : "Add Player"}
           </button>
-        </form>
+        </div>
+
+        {/* Player List */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-gray-200 text-sm">
             <thead className="bg-gray-50">
@@ -196,15 +265,27 @@ const PlayerManagement = () => {
                   <td className="border border-gray-300 p-2 text-center">
                     {index + 1}
                   </td>
-                  <td className="border border-gray-300 p-2">{player.fullName}</td>
-                  <td className="border border-gray-300 p-2">{player.branch}</td>
+                  <td className="border border-gray-300 p-2">
+                    {player.fullName}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {player.branch}
+                  </td>
                   <td className="border border-gray-300 p-2">{player.house}</td>
                   <td className="border border-gray-300 p-2">{player.year}</td>
-                  <td className="border border-gray-300 p-2">{player.mobile}</td>
+                  <td className="border border-gray-300 p-2">
+                    {player.mobile}
+                  </td>
                   <td className="border border-gray-300 p-2 text-center">
                     <button
+                      onClick={() => handleEdit(player)}
+                      className="bg-yellow-600 hover:bg-yellow-700 text-white py-1 px-3 rounded-md"
+                    >
+                      Edit
+                    </button>
+                    <button
                       onClick={() => deletePlayer(player._id)}
-                      className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md"
+                      className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md ml-2"
                     >
                       Delete
                     </button>
@@ -217,7 +298,7 @@ const PlayerManagement = () => {
                     colSpan="7"
                     className="border border-gray-300 p-2 text-center"
                   >
-                    No players added yet.
+                    No players found.
                   </td>
                 </tr>
               )}
